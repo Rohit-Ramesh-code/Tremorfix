@@ -97,7 +97,7 @@ export default function Exercises() {
             </div>
 
             {/* Exercise List */}
-            <main className="px-6 space-y-4 max-w-lg mx-auto w-full">
+            <main className="px-6 space-y-4 w-full">
                 {exercises.map((exercise) => {
                     const isCompleted = completedExercises.includes(exercise.id);
                     return (

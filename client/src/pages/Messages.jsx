@@ -47,7 +47,7 @@ export default function Messages() {
             </div>
 
             {/* Messages List */}
-            <main className="px-6 py-6 space-y-4 max-w-lg mx-auto w-full mb-16">
+            <main className="px-6 py-6 space-y-4 w-full mb-16">
                 {messages.map((msg) => (
                     <div
                         key={msg.id}
@@ -71,7 +71,7 @@ export default function Messages() {
 
             {/* Reply Section */}
             <div className="fixed bottom-[72px] left-0 right-0 bg-white/70 backdrop-blur-md border-t border-gray-200 px-6 py-4 z-40">
-                <div className="max-w-md mx-auto">
+                <div>
                     <p className="text-xs text-gray-600 mb-2">
                         💬 You can add context when sharing your weekly report
                     </p>
