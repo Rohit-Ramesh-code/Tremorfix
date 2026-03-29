@@ -41,6 +41,22 @@ export default function Dashboard() {
     return (episodes / (7 * 24)).toFixed(1);
   })();
 
+  const severityAvgPeak = (() => {
+    if (telemetry.length < 3) return '—';
+    let peakSum = 0;
+    let peakCount = 0;
+    for (let i = 1; i < telemetry.length - 1; i++) {
+      const prev = telemetry[i - 1].correction_angle;
+      const curr = telemetry[i].correction_angle;
+      const next = telemetry[i + 1].correction_angle;
+      if (curr > prev && curr > next) {
+        peakSum += curr;
+        peakCount++;
+      }
+    }
+    return peakCount > 0 ? (peakSum / peakCount).toFixed(1) : '—';
+  })();
+
   useEffect(() => {
     fetch('/api/profiles')
       .then(res => res.json())
@@ -148,6 +164,7 @@ export default function Dashboard() {
               ['Avg X-axis deviation', avgAngle, (v) => v !== '—' ? `${v}°` : v],
               ['Avg Y-axis deviation', avgAngle, (v) => v !== '—' ? `${v}°` : v],
               ['Tremor frequency', tremorEpisodeRate, (v) => v !== '—' ? `${v} episodes/hr` : v],
+              ['Severity', severityAvgPeak, (v) => v !== '—' ? `${v}° Avg Peak` : v],
             ].map(([label, val, fmt]) => (
               <tr key={label} style={{ borderBottom: '1px solid #f0f0f0' }}>
                 <td style={{
