@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer
+  Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts';
 
 const CARD_STYLE = {
@@ -117,6 +117,7 @@ export default function Dashboard() {
                   labelFormatter={(v) => new Date(v).toLocaleString()}
                   contentStyle={{ fontSize: '0.8rem', border: '1px solid #e0e0e0' }}
                 />
+                <ReferenceLine y={30} stroke="black" strokeWidth={2} />
                 <Line
                   type="monotone"
                   dataKey="correction_angle"
