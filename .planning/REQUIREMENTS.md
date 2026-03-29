@@ -18,8 +18,8 @@
 
 ### Data
 
-- [ ] **DATA-01**: Database is seeded with synthetic continuous telemetry data for both profiles covering 7 days
-- [ ] **DATA-02**: Synthetic data produces realistic angle values (5–130°) that look like genuine tremor correction patterns
+- [x] **DATA-01**: Database is seeded with synthetic continuous telemetry data for both profiles covering 7 days
+- [x] **DATA-02**: Synthetic data produces realistic angle values (5–130°) that look like genuine tremor correction patterns
 
 ### UI/UX
 
@@ -62,8 +62,8 @@
 | DASH-01 | Phase 2 | Pending |
 | DASH-02 | Phase 2 | Pending |
 | DASH-03 | Phase 2 | Pending |
-| DATA-01 | Phase 1 | Pending |
-| DATA-02 | Phase 1 | Pending |
+| DATA-01 | Phase 1 | Complete |
+| DATA-02 | Phase 1 | Complete |
 | UI-01 | Phase 2 | Pending |
 
 **Coverage:**
