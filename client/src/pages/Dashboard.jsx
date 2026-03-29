@@ -26,6 +26,21 @@ export default function Dashboard() {
     ? (telemetry.reduce((sum, r) => sum + r.correction_angle, 0) / telemetry.length).toFixed(1)
     : '—';
 
+  const tremorEpisodeRate = (() => {
+    if (!telemetry.length) return '—';
+    const mean = telemetry.reduce((sum, r) => sum + r.correction_angle, 0) / telemetry.length;
+    const variance = telemetry.reduce((sum, r) => sum + Math.pow(r.correction_angle - mean, 2), 0) / telemetry.length;
+    const threshold = mean + Math.sqrt(variance);
+    let episodes = 0;
+    let wasAbove = false;
+    for (const r of telemetry) {
+      const above = r.correction_angle > threshold;
+      if (above && !wasAbove) episodes++;
+      wasAbove = above;
+    }
+    return (episodes / (7 * 24)).toFixed(1);
+  })();
+
   useEffect(() => {
     fetch('/api/profiles')
       .then(res => res.json())
@@ -124,14 +139,15 @@ export default function Dashboard() {
           textTransform: 'uppercase',
           margin: '0 0 16px 0',
         }}>
-          Averages — Past 7 Days
+          Metrics — Past 7 Days
         </p>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <tbody>
             {[
-              ['Avg X-axis deviation', avgAngle],
-              ['Avg Y-axis deviation', avgAngle],
-            ].map(([label, val]) => (
+              ['Avg X-axis deviation', avgAngle, (v) => v !== '—' ? `${v}°` : v],
+              ['Avg Y-axis deviation', avgAngle, (v) => v !== '—' ? `${v}°` : v],
+              ['Tremor frequency', tremorEpisodeRate, (v) => v !== '—' ? `${v} episodes/hr` : v],
+            ].map(([label, val, fmt]) => (
               <tr key={label} style={{ borderBottom: '1px solid #f0f0f0' }}>
                 <td style={{
                   padding: '12px 0',
@@ -147,7 +163,7 @@ export default function Dashboard() {
                   fontSize: '0.95rem',
                   textAlign: 'right',
                 }}>
-                  {val !== '—' ? `${val}°` : val}
+                  {fmt(val)}
                 </td>
               </tr>
             ))}
