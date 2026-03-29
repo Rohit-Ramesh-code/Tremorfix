@@ -1,10 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceLine
 } from 'recharts';
-import { ArrowLeft, Menu, Bell, Share2, FileDown } from 'lucide-react';
+import { ArrowLeft, Menu, Bell, Share2, FileDown, Home, Dumbbell, Mail, User } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 export default function Dashboard() {
   const { profileId } = useParams();
@@ -13,6 +15,36 @@ export default function Dashboard() {
   const [telemetry, setTelemetry] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const dashboardRef = useRef(null);
+
+  const handleExportPDF = async () => {
+    if (!dashboardRef.current || !profile) return;
+    setIsExporting(true);
+    try {
+      // Small timeout to ensure DOM is settled
+      await new Promise(resolve => setTimeout(resolve, 100));
+      const canvas = await html2canvas(dashboardRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Tremorix_Report_${profile.name.replace(/\s+/g, '_')}.pdf`);
+    } catch (err) {
+      console.error('Failed to export PDF:', err);
+      // Fallback
+      window.print();
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const avgRoll = telemetry.length
     ? (telemetry.reduce((sum, r) => sum + Math.abs(r.roll), 0) / telemetry.length).toFixed(1)
@@ -80,7 +112,7 @@ export default function Dashboard() {
   }, [profileId]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-teal-50 to-blue-50 pb-24 font-['Inter',system-ui,sans-serif]">
+    <div ref={dashboardRef} className="min-h-screen bg-gradient-to-b from-teal-50 to-blue-50 pb-24 font-['Inter',system-ui,sans-serif]">
       {/* Top Navigation Bar */}
       <nav className="bg-white/70 backdrop-blur-md shadow-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="px-6 py-3 flex items-center justify-between">
@@ -205,13 +237,54 @@ export default function Dashboard() {
               <Share2 className="w-5 h-5" />
               Share
             </button>
-            <button className="py-4 px-4 bg-white text-teal-600 border-2 border-teal-600 rounded-xl font-medium hover:bg-teal-50 transition-colors flex items-center justify-center gap-2 active:scale-95 shadow-sm">
+            <button
+              onClick={handleExportPDF}
+              disabled={isExporting}
+              className="py-4 px-4 bg-white text-teal-600 border-2 border-teal-600 rounded-xl font-medium hover:bg-teal-50 transition-colors flex items-center justify-center gap-2 active:scale-95 shadow-sm disabled:opacity-50"
+            >
               <FileDown className="w-5 h-5" />
-              Export PDF
+              {isExporting ? 'Generating...' : 'Export PDF'}
             </button>
+          </div>
+
+          {/* Doctor Comments */}
+          <div className="border-t border-gray-200 pt-4">
+            <p className="text-sm font-medium text-gray-700 mb-3">
+              Doctor notes on your shared reports
+            </p>
+            <div className="bg-blue-50 rounded-xl p-4">
+              <p className="text-xs text-gray-600 mb-1">Dr. Laura • 2 days ago</p>
+              <p className="text-sm text-gray-700">
+                I see your tremor was higher before your afternoon dose. Let's talk at your next visit.
+              </p>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">(Not live chat)</p>
           </div>
         </div>
       </main>
+
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/70 backdrop-blur-md border-t border-gray-200 px-6 py-4 z-50">
+        <div className="flex justify-around items-center max-w-md mx-auto">
+          <NavButton icon={<Home />} label="Home" isActive onClick={() => navigate(0)} />
+          <NavButton icon={<Dumbbell />} label="Exercises" onClick={() => navigate(`/profile/${profileId}/exercises`)} />
+          <NavButton icon={<Mail />} label="Messages" onClick={() => navigate(`/profile/${profileId}/messages`)} />
+          <NavButton icon={<User />} label="Profile" onClick={() => navigate(`/profile/${profileId}/settings`)} />
+        </div>
+      </nav>
     </div>
+  );
+}
+
+function NavButton({ icon, label, isActive = false, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`flex flex-col items-center gap-1 transition-colors ${isActive ? 'text-teal-600' : 'text-gray-500 hover:text-gray-700'
+        }`}
+    >
+      <div className="w-6 h-6">{icon}</div>
+      <span className="text-xs font-medium">{label}</span>
+    </button>
   );
 }

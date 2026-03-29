@@ -33,6 +33,7 @@
 #define SERVO_MIN_US          500
 #define SERVO_MAX_US          2400
 #define SERVO_CENTER          90
+#define SERVO_CENTER_y        110
 #define SERVO_LIMIT_LOW       20
 #define SERVO_LIMIT_HIGH      160
 #define SERVICE_UUID          "12345678-1234-1234-1234-123456789abc"
@@ -162,7 +163,7 @@ void setup() {
   servoRoll.setPeriodHertz(50);
   servoPitch.attach(SERVO_PITCH_PIN, SERVO_MIN_US, SERVO_MAX_US);
   servoRoll.attach(SERVO_ROLL_PIN,   SERVO_MIN_US, SERVO_MAX_US);
-  servoPitch.write(SERVO_CENTER);
+  servoPitch.write(SERVO_CENTER_y);
   servoRoll.write(SERVO_CENTER);
   Serial.println("[SERVO] Initialized at center");
   Wire.begin(MPU_SDA, MPU_SCL);

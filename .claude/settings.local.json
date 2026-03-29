@@ -5,7 +5,9 @@
       "Bash(node:*)",
       "WebSearch",
       "Bash(ls C:/Users/rohit/ROHIT/Tremorix/.planning/phases/01-foundation/*VERIFICATION*)",
-      "Bash(ls C:/Users/rohit/ROHIT/Tremorix/.planning/phases/02-dashboard/*VERIFICATION*)"
+      "Bash(ls C:/Users/rohit/ROHIT/Tremorix/.planning/phases/02-dashboard/*VERIFICATION*)",
+      "Bash(git -C \"C:\\\\Users\\\\rohit\\\\ROHIT\\\\Tremorix\" add \"C:\\\\Users\\\\rohit\\\\ROHIT\\\\Tremorix\\\\ble_bridge.py\")",
+      "Bash(git -C \"C:\\\\Users\\\\rohit\\\\ROHIT\\\\Tremorix\" status --short ble_bridge.py)"
     ]
   }
 }
