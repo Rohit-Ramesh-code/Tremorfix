@@ -3,7 +3,8 @@
     "allow": [
       "Skill(gsd:new-project)",
       "Bash(node:*)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(ls C:/Users/rohit/ROHIT/Tremorix/.planning/phases/01-foundation/*VERIFICATION*)"
     ]
   }
 }
