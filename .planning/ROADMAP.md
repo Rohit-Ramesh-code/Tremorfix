@@ -26,7 +26,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. User can click a profile and be navigated to that profile's route/page
   3. Database contains 7 days of continuous synthetic telemetry for both profiles with angle values in the 5-130 degree range
   4. Synthetic data looks like genuine tremor correction patterns (not flat or random noise)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Scaffold monorepo and generate seeded synthetic telemetry (DATA-01, DATA-02)
+- [ ] 01-02-PLAN.md — Build Express API endpoint and React profile selection screen (PROF-01, PROF-02)
 
 ### Phase 2: Dashboard
 **Goal**: Users can view a complete clinical dashboard for any selected profile
@@ -46,5 +50,5 @@ Phases execute in numeric order: 1 → 2
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/2 | Not started | - |
 | 2. Dashboard | 0/TBD | Not started | - |
