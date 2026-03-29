@@ -16,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/profiles', require('./routes/profiles')(db));
+app.use('/api/profiles/:id/telemetry', require('./routes/telemetry')(db));
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Tremorix server running on port ${PORT}`));
