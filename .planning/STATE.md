@@ -4,14 +4,15 @@ milestone: v1.0
 milestone_name: milestone
 current_phase: 1 of 2 (Foundation)
 current_plan: 2
-status: executing
-last_updated: "2026-03-29T03:41:30.198Z"
+status: verifying
+stopped_at: Completed 01-foundation/01-02-PLAN.md — profile selection UI and SPA routing done, Phase 1 complete
+last_updated: "2026-03-29T03:48:50.966Z"
 last_activity: 2026-03-29
 progress:
   total_phases: 1
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -28,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 **Current Phase:** 1 of 2 (Foundation)
 **Current Plan:** 2
 **Total Plans in Phase:** 2
-**Status:** Ready to execute
+**Status:** Phase complete — ready for verification
 **Last Activity:** 2026-03-29
 
 Progress: [█░░░░░░░░░] 10%
@@ -52,6 +53,7 @@ Progress: [█░░░░░░░░░] 10%
 
 *Updated after each plan completion*
 | Phase 01-foundation P01 | 3min | 2 tasks | 11 files |
+| Phase 01-foundation P02 | 15min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -65,6 +67,8 @@ Recent decisions affecting current work:
 - Init: 2 demo profiles only, no auth, no ML for v1
 - [Phase 01-foundation]: Used better-sqlite3@12.8.0 instead of ^9.0.0 — prebuilt binaries available for Node 25.x; v9 requires Visual Studio Build Tools not present on this machine
 - [Phase 01-foundation]: Wrote Vite client files directly instead of npm create vite — avoids interactive prompts in non-TTY shell
+- [Phase 01-foundation]: React Router v6 patterns only (Routes/Route/useNavigate/useParams) throughout profile UI
+- [Phase 01-foundation]: Dashboard fetches /api/profiles independently so direct URL access and refresh work without router state
 
 ### Pending Todos
 
@@ -76,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-**Last session:** 2026-03-29
-**Stopped at:** Completed 01-foundation/01-01-PLAN.md — monorepo scaffold and synthetic data done
+**Last session:** 2026-03-29T03:48:50.963Z
+**Stopped at:** Completed 01-foundation/01-02-PLAN.md — profile selection UI and SPA routing done, Phase 1 complete
 Resume file: None

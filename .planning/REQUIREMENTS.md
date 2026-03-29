@@ -7,8 +7,8 @@
 
 ### Profiles
 
-- [ ] **PROF-01**: User can view a profile selection screen listing 2 demo profiles with name and avatar/icon
-- [ ] **PROF-02**: User can click a profile to navigate to that profile's dashboard
+- [x] **PROF-01**: User can view a profile selection screen listing 2 demo profiles with name and avatar/icon
+- [x] **PROF-02**: User can click a profile to navigate to that profile's dashboard
 
 ### Dashboard
 
@@ -57,8 +57,8 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PROF-01 | Phase 1 | Pending |
-| PROF-02 | Phase 1 | Pending |
+| PROF-01 | Phase 1 | Complete |
+| PROF-02 | Phase 1 | Complete |
 | DASH-01 | Phase 2 | Pending |
 | DASH-02 | Phase 2 | Pending |
 | DASH-03 | Phase 2 | Pending |
