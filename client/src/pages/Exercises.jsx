@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { Home, Dumbbell, Mail, User, Play, Check, HandMetal, Wind, GripHorizontal, RotateCw, ThumbsUp } from 'lucide-react';
-import { useState } from 'react';
+import { Home, Dumbbell, Mail, User, Play, Check, HandMetal, Wind, GripHorizontal, RotateCw, ThumbsUp, ChevronDown } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 
 const exercises = [
@@ -49,17 +49,46 @@ const exercises = [
 export default function Exercises() {
     const navigate = useNavigate();
     const { profileId } = useParams();
-    const [completedExercises, setCompletedExercises] = useState([]);
+    const [selectedExercises, setSelectedExercises] = useState([]);
     const [showSuccess, setShowSuccess] = useState(false);
+    
+    // Dropdown additions
+    const [profiles, setProfiles] = useState([]);
+    const [assigningExerciseId, setAssigningExerciseId] = useState(null);
+    const [assignedPatientName, setAssignedPatientName] = useState("");
 
-    const handleComplete = (id) => {
-        setCompletedExercises([...completedExercises, id]);
+    // Quick check to see if we're a doctor
+    const isDoctor = localStorage.getItem('userRole') === 'doctor';
+
+    useEffect(() => {
+        if (isDoctor) {
+            fetch('/api/profiles')
+                .then(res => res.json())
+                .then(data => setProfiles(data))
+                .catch(err => console.error(err));
+        }
+    }, [isDoctor]);
+
+    const handleAction = (id) => {
+        if (isDoctor) {
+            setAssigningExerciseId(assigningExerciseId === id ? null : id);
+        } else {
+            setSelectedExercises([...selectedExercises, id]);
+            setShowSuccess(true);
+            confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.6 },
+            });
+            setTimeout(() => setShowSuccess(false), 3000);
+        }
+    };
+
+    const handleAssignToPatient = (exerciseId, profileId, profileName) => {
+        setSelectedExercises([...selectedExercises, exerciseId]);
+        setAssignedPatientName(profileName);
         setShowSuccess(true);
-        confetti({
-            particleCount: 50,
-            spread: 60,
-            origin: { y: 0.6 },
-        });
+        setAssigningExerciseId(null);
         setTimeout(() => setShowSuccess(false), 3000);
     };
 
@@ -67,8 +96,12 @@ export default function Exercises() {
         <div className="min-h-screen bg-gradient-to-b from-teal-50 to-blue-50 pb-24 font-['Inter',system-ui,sans-serif]">
             {/* Header */}
             <header className="bg-white/70 backdrop-blur-md shadow-sm px-6 py-4">
-                <h1 className="text-2xl font-bold text-gray-900 mb-1">Exercises</h1>
-                <p className="text-sm text-gray-600">Gentle activities for steadier hands</p>
+                <h1 className="text-2xl font-bold text-gray-900 mb-1">
+                    {isDoctor ? 'Assign Exercises' : 'Exercises'}
+                </h1>
+                <p className="text-sm text-gray-600">
+                    {isDoctor ? 'Select exercises to add to the patient\'s routine' : 'Gentle activities for steadier hands'}
+                </p>
             </header>
 
             {/* Success Message */}
@@ -76,8 +109,8 @@ export default function Exercises() {
                 <div className="mx-6 mt-4 bg-green-50 border-2 border-green-200 rounded-xl p-4 flex items-center gap-3">
                     <Check className="w-6 h-6 text-green-600" />
                     <div>
-                        <p className="font-semibold text-green-900">Nice work!</p>
-                        <p className="text-sm text-green-700">Small steps help.</p>
+                        <p className="font-semibold text-green-900">{isDoctor ? 'Exercise assigned!' : 'Nice work!'}</p>
+                        <p className="text-sm text-green-700">{isDoctor ? `Assigned to ${assignedPatientName}.` : 'Small steps help.'}</p>
                     </div>
                 </div>
             )}
@@ -87,9 +120,9 @@ export default function Exercises() {
                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-sm border border-gray-100">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-sm text-gray-600 mb-1">This week</p>
-                            <p className="text-3xl font-bold text-teal-600">{completedExercises.length}</p>
-                            <p className="text-sm text-gray-700 mt-1">exercises completed</p>
+                            <p className="text-sm text-gray-600 mb-1">{isDoctor ? 'Currently Assigned' : 'This week'}</p>
+                            <p className="text-3xl font-bold text-teal-600">{selectedExercises.length}</p>
+                            <p className="text-sm text-gray-700 mt-1">{isDoctor ? 'exercises in plan' : 'exercises completed'}</p>
                         </div>
                         <Dumbbell className="w-16 h-16 text-teal-600" />
                     </div>
@@ -99,11 +132,11 @@ export default function Exercises() {
             {/* Exercise List */}
             <main className="px-6 space-y-4 w-full">
                 {exercises.map((exercise) => {
-                    const isCompleted = completedExercises.includes(exercise.id);
+                    const isSelected = selectedExercises.includes(exercise.id);
                     return (
                         <div
                             key={exercise.id}
-                            className={`bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-sm border transition-all ${isCompleted ? 'border-green-300 bg-green-50/80' : 'border-gray-100'
+                            className={`bg-white/80 backdrop-blur-sm rounded-2xl p-5 shadow-sm border transition-all ${isSelected ? 'border-green-300 bg-green-50/80' : 'border-gray-100'
                                 }`}
                         >
                             <div className="flex items-start gap-4 mb-3">
@@ -114,29 +147,52 @@ export default function Exercises() {
                                         {exercise.duration} • {exercise.difficulty}
                                     </p>
                                 </div>
-                                {isCompleted && <Check className="w-6 h-6 text-green-600" />}
+                                {isSelected && <Check className="w-6 h-6 text-green-600" />}
                             </div>
                             <p className="text-sm text-gray-700 mb-4">{exercise.description}</p>
-                            <button
-                                onClick={() => handleComplete(exercise.id)}
-                                disabled={isCompleted}
-                                className={`w-full py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2 ${isCompleted
-                                        ? 'bg-green-100 text-green-700 cursor-not-allowed'
-                                        : 'bg-teal-600 text-white hover:bg-teal-700'
-                                    }`}
-                            >
-                                {isCompleted ? (
-                                    <>
-                                        <Check className="w-5 h-5" />
-                                        Completed
-                                    </>
-                                ) : (
-                                    <>
-                                        <Play className="w-5 h-5" />
-                                        Start Exercise
-                                    </>
-                                )}
-                            </button>
+                            {isDoctor && assigningExerciseId === exercise.id ? (
+                                <div className="w-full relative">
+                                    <select 
+                                        className="w-full py-3 px-4 rounded-xl font-medium border-2 border-teal-500 bg-white text-gray-900 appearance-none focus:outline-none"
+                                        onChange={(e) => {
+                                            if (e.target.value) {
+                                                const selectedProfile = profiles.find(p => String(p.id) === String(e.target.value));
+                                                if (selectedProfile) {
+                                                    handleAssignToPatient(exercise.id, selectedProfile.id, selectedProfile.name);
+                                                }
+                                            }
+                                        }}
+                                        defaultValue=""
+                                    >
+                                        <option value="" disabled>Select a patient...</option>
+                                        {profiles.map(p => (
+                                            <option key={p.id} value={p.id}>{p.name}</option>
+                                        ))}
+                                    </select>
+                                    <ChevronDown className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-teal-600 pointer-events-none" />
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => handleAction(exercise.id)}
+                                    disabled={isSelected}
+                                    className={`w-full py-3 px-4 rounded-xl font-medium transition-colors flex items-center justify-center gap-2 ${isSelected
+                                            ? 'bg-green-100 text-green-700 cursor-not-allowed'
+                                            : 'bg-teal-600 text-white hover:bg-teal-700'
+                                        }`}
+                                >
+                                    {isSelected ? (
+                                        <>
+                                            <Check className="w-5 h-5" />
+                                            {isDoctor ? 'Assigned' : 'Completed'}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {isDoctor ? <Dumbbell className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                                            {isDoctor ? 'Assign to Patient' : 'Start Exercise'}
+                                        </>
+                                    )}
+                                </button>
+                            )}
                         </div>
                     );
                 })}

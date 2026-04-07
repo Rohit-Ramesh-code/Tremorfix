@@ -24,6 +24,7 @@ export default function Login() {
 
     const handleLogin = () => {
         setIsLoading(true);
+        localStorage.setItem('userRole', role); // Persist role for conditional UI
         setTimeout(() => {
             if (role === 'patient') {
                 // Find Alice's profile specifically, default to 1 if missing safely
